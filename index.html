@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="assets/css/style.css" />
+    
+</head>
+<body>
+
+
+
+    <!-- jQuery import -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+
+    <!-- Firebase setup -->
+    <script src="https://www.gstatic.com/firebasejs/5.5.1/firebase.js"></script>
+    <script>
+    // Initialize Firebase
+    var config = {
+        apiKey: "AIzaSyCINeSwD9eaDvhCmG9TJTnXYmd8i8x0CB0",
+        authDomain: "rps-multiplayer-5c664.firebaseapp.com",
+        databaseURL: "https://rps-multiplayer-5c664.firebaseio.com",
+        projectId: "rps-multiplayer-5c664",
+        storageBucket: "rps-multiplayer-5c664.appspot.com",
+        messagingSenderId: "752482170602"
+    };
+    firebase.initializeApp(config);
+    </script>
+
+    <script src="assets/javascript/game.js"></script>
+</body>
+</html>
