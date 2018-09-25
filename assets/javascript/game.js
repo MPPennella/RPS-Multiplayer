@@ -98,5 +98,11 @@ function makeRPSbutton(name) {
     }
     button.append( $("<img>").attr("src", src) )
 
+    button.on("click", function() {
+        database.ref("/players/player1").update({choice: name})
+        $(this).parent().empty().append( $("<img>").attr("src", src) )
+        console.log(src)
+    })
+
     return button;
 }
