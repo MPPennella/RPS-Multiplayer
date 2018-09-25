@@ -61,7 +61,7 @@ $("#nameSubmit").on("click", function(event) {
             $("#nameForm").hide()
 
             // Make buttons in Player 1 area
-            makeRPSbuttons( $("#player1Selection") );
+            makeRPSbuttons( $("#player1Selection") )
             state = S_P1_SELECT
             database.ref().update({state: S_P1_SELECT})
 
@@ -138,7 +138,14 @@ function makeRPSbutton(name) {
     button.append( $("<img>").attr("src", src) )
 
     button.on("click", function() {
+        // Move to next state
+        state = S_P2_SELECT
+        database.ref().update({state: S_P2_SELECT})
+
+        // Push choice to database
         database.ref("/players/player1").update({choice: name})
+
+        // Remove buttons and display selection
         $(this).parent().empty().append( $("<img>").attr("src", src) )
     })
 
