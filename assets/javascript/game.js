@@ -19,6 +19,8 @@ $("#nameSubmit").on("click", function(event) {
             ref.set({
                 name: name
             })
+            makeRPSbuttons( $("#player1Selection") );
+
         } else {
             console.log("Player 1 already exists")
 
@@ -60,3 +62,35 @@ database.ref("/players/player2").on("value", function(snap) {
         $("#player2Name").text("Player 2")
     }
 })
+
+// Makes the set of buttons for selecting which symbol to throw, and places them in target jQuery element
+function makeRPSbuttons(target) {
+    target.append(
+        makeRPSbutton("rock"),
+        makeRPSbutton("paper"),
+        makeRPSbutton("scissors")
+    )
+}
+
+// Creates a button for the specified RPS symbol
+// Returns a jQuery object with the formatted button
+function makeRPSbutton(name) {
+    let button = $("<button>")
+    let src;
+    switch (name) {
+        case "rock":
+            src = "assets/images/RockHand.png"
+            break;
+        case "paper":
+            src = "assets/images/PaperHand.png"
+            break;
+        case "scissors":
+            src = "assets/images/ScissorsHand.png"
+            break;
+        default:
+            break;
+    }
+    button.append( $("<img>").attr("src", src) )
+
+    return button;
+}
