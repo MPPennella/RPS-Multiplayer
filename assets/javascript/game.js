@@ -62,6 +62,7 @@ $("#nameSubmit").on("click", function(event) {
 
             // Make buttons in Player 1 area
             makeRPSbuttons( $("#player1Selection") );
+            state = S_P1_SELECT
             database.ref().update({state: S_P1_SELECT})
 
         } else {
