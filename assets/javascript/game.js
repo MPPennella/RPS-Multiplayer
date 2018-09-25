@@ -40,3 +40,23 @@ $("#nameSubmit").on("click", function(event) {
         }
     })
 })
+
+// Detects changes to Player 1's name
+database.ref("/players/player1").on("value", function(snap) {
+    let player = snap.val()
+    if (player != null) {
+        $("#player1Name").text(player.name)
+    } else {
+        $("#player1Name").text("Player 1")
+    }
+})
+
+// Detects changes to Player 1's name
+database.ref("/players/player2").on("value", function(snap) {
+    let player = snap.val()
+    if (player != null) {
+        $("#player2Name").text(player.name)
+    } else {
+        $("#player2Name").text("Player 2")
+    }
+})
