@@ -8,6 +8,9 @@ const S_MATCH_OVER = 4
 // Local state-tracking variable
 let state
 
+// Local win/loss-tracking variables
+let wins, losses
+
 // Database reference
 let database = firebase.database()
 
@@ -53,8 +56,14 @@ $("#nameSubmit").on("click", function(event) {
             // Put player name into database
             let ref = database.ref("/players/player1")
             ref.onDisconnect().remove()
+
+            wins=0
+            losses=0;
+            
             ref.set({
-                name: name
+                name: name,
+                wins: wins,
+                losses: losses
             })
 
             // Hide name entry
@@ -147,7 +156,62 @@ function makeRPSbutton(name) {
 
         // Remove buttons and display selection
         $(this).parent().empty().append( $("<img>").attr("src", src) )
+
+        // Use test opponent to simulate P2 pick
+        p2SelectTestingDummy()
     })
 
     return button;
 }
+
+function p2SelectTestingDummy() {
+    // Push choice to database (always "rock" for dummy)
+    database.ref("/players/player2").update({choice: "rock"})
+
+    // Move to next state
+    state = S_COMPARE
+    database.ref().update({state: state})
+
+    determineWinner()
+}
+
+// Compares P1 and P2 selections and determines winner
+function determineWinner() {
+    database.ref("/players").once("value", function(snap) {
+        let p1Pick = convertPick( snap.child("player1").val().choice )
+        let p2Pick = convertPick( snap.child("player2").val().choice )
+        console.log("P1",p1Pick,"P2",p2Pick)
+
+
+        // Use modular math to find relationship between player and opponent pick
+        // Extra +3 is to make sure calculation is not on a negative number
+        let winCalc = (p1Pick-p2Pick+3) % 3
+
+        if ( winCalc == 1 ) {
+            // Modulus 1 is a win
+            // Add 1 to wins and push to database
+            wins++
+            database.ref("/players/player1").update({wins: wins})
+        } else if ( winCalc == 2) {
+            // Modulus 2 is a loss
+            // Add 1 to losses and push to database
+            losses++
+            database.ref("/players/player1").update({losses: losses})
+        }
+        // Modulus 0 is a tie, ties are not tracked
+
+    })
+    
+}
+
+// Converts pick from string to integer format for analysis
+// Returns integer representation
+function convertPick(pick) {
+    switch (pick) {
+        case "rock":     return 1;
+        case "paper":    return 2;
+        case "scissors": return 3;
+        default:         return null;
+    }
+}
+
