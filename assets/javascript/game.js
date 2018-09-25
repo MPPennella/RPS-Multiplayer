@@ -15,7 +15,7 @@ $(document).ready(function () {
     // Check if game is in progress by checking if player slots full
     database.ref("/players").once('value', function(snap) {
         if ( !snap.hasChild("player1") && !snap.hasChild("player2") ) {
-            // If empty slot, set game state to S_PLAYER_JOIN
+            // If both slots empty, set game state to S_PLAYER_JOIN
             console.log( "NO GAME IN PROGRESS")
             state = S_PLAYER_JOIN
             database.ref().update({state: S_PLAYER_JOIN})
@@ -24,8 +24,13 @@ $(document).ready(function () {
                 console.log("STATE: "+snap.val().state)
             })
         } else {
-            // Do not interrupt game
+            // Otherwise keep existing game state
             console.log( "GAME IN PROGRESS")
+            database.ref().once("value", function(snap) {
+                state = snap.val().state
+                console.log("STATE: "+snap.val().state)
+            })
+           
         }
     })
     
