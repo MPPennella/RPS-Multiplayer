@@ -12,13 +12,19 @@ $("#nameSubmit").on("click", function(event) {
     // Check if player 1 exists
     database.ref("/players").once('value', function(snap) {
         if (!snap.hasChild("player1")) {
-            console.log("P1 doesn't Exist")
+            // Make player into Player 1
 
+            // Put player name into database
             let ref = database.ref("/players/player1")
             ref.onDisconnect().remove()
             ref.set({
                 name: name
             })
+
+            // Hide name entry
+            $("#nameForm").hide()
+
+            // Make buttons in Player 1 area
             makeRPSbuttons( $("#player1Selection") );
 
         } else {
