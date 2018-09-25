@@ -1,4 +1,35 @@
+// Constants to refer to state values
+const S_PLAYER_JOIN = 0
+const S_P1_SELECT = 1
+const S_P2_SELECT = 2
+const S_COMPARE = 3
+const S_MATCH_OVER = 4
+
+// Local state-tracking variable
+let state
+
+// Database reference
 let database = firebase.database()
+
+$(document).ready(function () {
+    // Check if game is in progress by checking if player slots full
+    database.ref("/players").once('value', function(snap) {
+        if ( !snap.hasChild("player1") && !snap.hasChild("player2") ) {
+            // If empty slot, set game state to S_PLAYER_JOIN
+            console.log( "NO GAME IN PROGRESS")
+            state = S_PLAYER_JOIN
+            database.ref().update({state: S_PLAYER_JOIN})
+
+            database.ref().once("value", function(snap) {
+                console.log("STATE: "+snap.val().state)
+            })
+        } else {
+            // Do not interrupt game
+            console.log( "GAME IN PROGRESS")
+        }
+    })
+    
+})
 
 // Handles click on name button - assigns name to P1 or P2 seat if available
 $("#nameSubmit").on("click", function(event) {
@@ -26,6 +57,7 @@ $("#nameSubmit").on("click", function(event) {
 
             // Make buttons in Player 1 area
             makeRPSbuttons( $("#player1Selection") );
+            database.ref().update({state: S_P1_SELECT})
 
         } else {
             console.log("Player 1 already exists")
@@ -55,7 +87,7 @@ database.ref("/players/player1").on("value", function(snap) {
     if (player != null) {
         $("#player1Name").text(player.name)
     } else {
-        $("#player1Name").text("Player 1")
+        $("#player1Name").html("&nbsp;")
     }
 })
 
@@ -65,12 +97,13 @@ database.ref("/players/player2").on("value", function(snap) {
     if (player != null) {
         $("#player2Name").text(player.name)
     } else {
-        $("#player2Name").text("Player 2")
+        $("#player2Name").html("&nbsp;")
     }
 })
 
 // Makes the set of buttons for selecting which symbol to throw, and places them in target jQuery element
 function makeRPSbuttons(target) {
+    target.empty()
     target.append(
         makeRPSbutton("rock"),
         makeRPSbutton("paper"),
@@ -101,7 +134,6 @@ function makeRPSbutton(name) {
     button.on("click", function() {
         database.ref("/players/player1").update({choice: name})
         $(this).parent().empty().append( $("<img>").attr("src", src) )
-        console.log(src)
     })
 
     return button;
