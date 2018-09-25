@@ -59,7 +59,7 @@ $("#nameSubmit").on("click", function(event) {
 
             wins=0
             losses=0;
-            
+
             ref.set({
                 name: name,
                 wins: wins,
@@ -187,6 +187,7 @@ function determineWinner() {
         // Extra +3 is to make sure calculation is not on a negative number
         let winCalc = (p1Pick-p2Pick+3) % 3
 
+        // Change scores based on result
         if ( winCalc == 1 ) {
             // Modulus 1 is a win
             // Add 1 to wins and push to database
@@ -200,6 +201,17 @@ function determineWinner() {
         }
         // Modulus 0 is a tie, ties are not tracked
 
+        // Determine if match won (3 wins) or if more games need to be played
+        if (wins>=3) {
+            // Display victory screen
+            console.log("Won the match!")
+        } else {
+            // Play another round
+            makeRPSbuttons( $("#player1Selection") )
+            state = S_P1_SELECT
+            database.ref().update({state: S_P1_SELECT})
+        }
+            
     })
     
 }
