@@ -1,0 +1,17 @@
+.playerDiv {
+    width: 200px;
+    display: inline-block;
+}
+
+.rpsSelector {
+    width: 100px;
+}
+
+.rpsBtnImg {
+    width: 100px;
+    display: inline-block;
+}
+
+.selectedImg {
+    width: 200px;
+}

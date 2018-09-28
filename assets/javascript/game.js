@@ -106,7 +106,7 @@ database.ref("/players/player1").on("value", function(snap) {
     }
 })
 
-// Detects changes to Player 1's name
+// Detects changes to Player 2's name
 database.ref("/players/player2").on("value", function(snap) {
     let player = snap.val()
     if (player != null) {
@@ -129,7 +129,7 @@ function makeRPSbuttons(target) {
 // Creates a button for the specified RPS symbol
 // Returns a jQuery object with the formatted button
 function makeRPSbutton(name) {
-    let button = $("<button>")
+    let button = $("<button>").addClass("rpsSelector")
     let src;
     switch (name) {
         case "rock":
@@ -144,7 +144,7 @@ function makeRPSbutton(name) {
         default:
             break;
     }
-    button.append( $("<img>").attr("src", src) )
+    button.append( $("<img>").addClass("rpsBtnImg").attr("src", src) )
 
     button.on("click", function() {
         // Move to next state
@@ -155,7 +155,7 @@ function makeRPSbutton(name) {
         database.ref("/players/player1").update({choice: name})
 
         // Remove buttons and display selection
-        $(this).parent().empty().append( $("<img>").attr("src", src) )
+        $(this).parent().empty().append( $("<img>").addClass("selectedImg").attr("src", src) )
 
         // Use test opponent to simulate P2 pick
         p2SelectTestingDummy()
