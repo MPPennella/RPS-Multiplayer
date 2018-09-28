@@ -217,13 +217,18 @@ function determineWinner() {
             // Add 1 to wins and push to database
             wins++
             database.ref("/players/player1").update({wins: wins})
+            $("#winDisplay").text("You Won!")
         } else if ( winCalc == 2) {
             // Modulus 2 is a loss
             // Add 1 to losses and push to database
             losses++
             database.ref("/players/player1").update({losses: losses})
+            $("#winDisplay").text("You Lost!")
+        } else {
+            // Modulus 0 is a tie, ties are not tracked
+            $("#winDisplay").text("It's a tie!")
         }
-        // Modulus 0 is a tie, ties are not tracked
+        
 
         // Determine if match won (3 wins) or if more games need to be played
         if (wins>=3) {
