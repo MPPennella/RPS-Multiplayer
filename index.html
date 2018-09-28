@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Page Title</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="assets/css/reset.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="assets/css/style.css" />
     
 </head>
@@ -16,16 +17,19 @@
         <input id="nameSubmit" type="submit" value="Enter">
     </form>
 
-    <div>Player 1</div>
-    <div id="player1Name">&nbsp;</div>
-    <div id="player1Selection">Waiting for player to join</div>
+    <div class="playerDiv">
+        <div>Player 1</div>
+        <div id="player1Name">&nbsp;</div>
+        <div id="player1Selection">Waiting for player to join</div>
+    </div>
 
     <br>
 
-    <div>Player 2</div>
-    <div id="player2Name">&nbsp;</div>
-    <div id="player2Selection">Waiting for player to join</div>
-
+    <div class="playerDiv">
+        <div>Player 2</div>
+        <div id="player2Name">&nbsp;</div>
+        <div id="player2Selection">Waiting for player to join</div>
+    </div>
 
     <!-- jQuery import -->
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
