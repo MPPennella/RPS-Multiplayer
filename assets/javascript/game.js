@@ -157,6 +157,9 @@ function makeRPSbutton(name) {
         // Remove buttons and display selection
         $(this).parent().empty().append( $("<img>").addClass("selectedImg").attr("src", src) )
 
+        // Display waiting text for P2 pick
+        $("#player2Selection").empty().text("Waiting for opponent to pick")
+
         // Use test opponent to simulate P2 pick
         p2SelectTestingDummy()
     })
@@ -165,14 +168,35 @@ function makeRPSbutton(name) {
 }
 
 function p2SelectTestingDummy() {
-    // Push choice to database (always "rock" for dummy)
-    database.ref("/players/player2").update({choice: "rock"})
+    setTimeout(function () {
+        // Choice is always "rock" for dummy
+        let choice = "rock"
 
-    // Move to next state
-    state = S_COMPARE
-    database.ref().update({state: state})
+        let src;
+        switch (choice) {
+            case "rock":
+                src = "assets/images/RockHand.png"
+                break;
+            case "paper":
+                src = "assets/images/PaperHand.png"
+                break;
+            case "scissors":
+                src = "assets/images/ScissorsHand.png"
+                break;
+            default:
+                break;
+        }
 
-    determineWinner()
+        // Push choice to database
+        database.ref("/players/player2").update({choice: choice})
+        $("#player2Selection").parent().empty().append( $("<img>").addClass("selectedImg").attr("src", src) )
+
+        // Move to next state
+        state = S_COMPARE
+        database.ref().update({state: state})
+
+        determineWinner()
+    }, 1000)
 }
 
 // Compares P1 and P2 selections and determines winner
