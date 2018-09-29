@@ -249,11 +249,6 @@ function makeRPSbutton(btnName) {
         // Remove buttons and display selection
         $(this).parent().empty().append( $("<img>").addClass("selectedImg").attr("src", src) )
 
-        // // Display waiting text for P2 pick
-        // $("#player2Selection").empty().text("Waiting for opponent to pick")
-
-        // // Use test opponent to simulate P2 pick
-        // p2SelectTestingDummy()
     })
 
     return button;
