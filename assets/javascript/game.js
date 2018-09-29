@@ -13,6 +13,7 @@ let wins, losses
 
 // Local player-tracking variables
 let playerName = null
+let playerNumber = null
 
 // Database reference
 let database = firebase.database()
@@ -55,6 +56,8 @@ $("#nameSubmit").on("click", function(event) {
     database.ref("/players").once('value', function(snap) {
         if (!snap.hasChild("player1")) {
             // Make player into Player 1
+            playerName =name
+            playerNumber = 1
 
             // Put player name into database
             let ref = database.ref("/players/player1")
@@ -83,8 +86,12 @@ $("#nameSubmit").on("click", function(event) {
             // Check if player 2 exists
             
             if (!snap.hasChild("player2")) {
-                console.log("P2 doesn't Exist")
+                
+                // Make player into Player 2
+                playerName = name
+                playerNumber = 2
     
+                // Put player name into database
                 let ref = database.ref("/players/player2")
                 ref.onDisconnect().remove()
                 ref.set({
@@ -103,8 +110,7 @@ $("#nameSubmit").on("click", function(event) {
 database.ref("/players/player1").on("value", function(snap) {
     let player = snap.val()
     if (player != null) {
-        playerName = player.name
-        $("#player1Name").text(playerName)
+        $("#player1Name").text(player.name)
     } else {
         $("#player1Name").html("&nbsp;")
     }
@@ -275,6 +281,8 @@ $("#chatSubmit").on("click", function(event) {
     }
     $("#chatEntry").val("");
 })
+
+// TODO: Add chat messages for disconnects
 
 // Loads chat into log
 database.ref("/chat").orderByChild("timestamp").on("child_added", function(snap) {
