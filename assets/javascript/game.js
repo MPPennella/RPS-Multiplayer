@@ -35,6 +35,7 @@ database.ref("/state").on("value", function(snap) {
             p2SelectPhase();
             break;
         case S_COMPARE: 
+            console.log("S_COMPARE")
             break;
         case S_MATCH_OVER:
             break;
@@ -219,10 +220,10 @@ function makeRPSbuttons(target) {
 
 // Creates a button for the specified RPS symbol
 // Returns a jQuery object with the formatted button
-function makeRPSbutton(name) {
+function makeRPSbutton(btnName) {
     let button = $("<button>").addClass("rpsSelector")
     let src;
-    switch (name) {
+    switch (btnName) {
         case "rock":
             src = "assets/images/RockHand.png"
             break;
@@ -239,25 +240,26 @@ function makeRPSbutton(name) {
 
     button.on("click", function() {
         // Move to next state
-        state = S_P2_SELECT
-        database.ref().update({state: S_P2_SELECT})
+        if (playerNumber==1) database.ref().update({state: S_P2_SELECT});
+        else if (playerNumber==2) database.ref().update({state: S_COMPARE});
 
         // Push choice to database
-        database.ref("/players/player1").update({choice: name})
+        database.ref("/players/player"+playerNumber).update({choice: btnName})
 
         // Remove buttons and display selection
         $(this).parent().empty().append( $("<img>").addClass("selectedImg").attr("src", src) )
 
-        // Display waiting text for P2 pick
-        $("#player2Selection").empty().text("Waiting for opponent to pick")
+        // // Display waiting text for P2 pick
+        // $("#player2Selection").empty().text("Waiting for opponent to pick")
 
-        // Use test opponent to simulate P2 pick
-        p2SelectTestingDummy()
+        // // Use test opponent to simulate P2 pick
+        // p2SelectTestingDummy()
     })
 
     return button;
 }
 
+// Testing dummy for logic testing
 function p2SelectTestingDummy() {
     setTimeout(function () {
         // Choice is always "rock" for dummy
