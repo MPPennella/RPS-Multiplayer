@@ -200,7 +200,7 @@ function p2SelectPhase() {
         // What Player 2 sees
     
         // Waiting message in Player 1 area
-        $("#player2Selection").empty().text("Opponent has chosen")
+        $("#player1Selection").empty().text("Opponent has chosen")
 
         // Make buttons in Player 2 area
         makeRPSbuttons( $("#player2Selection") )
