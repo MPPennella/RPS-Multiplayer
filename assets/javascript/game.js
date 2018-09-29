@@ -18,6 +18,26 @@ let playerNumber = null
 // Database reference
 let database = firebase.database()
 
+// Primary state controller
+database.ref("/state").on("value", function(snap) {
+    state = parseInt(`${snap.val()}`)
+    
+    switch (state) {
+        case S_PLAYER_JOIN: 
+            console.log("S_PLAYER_JOIN")
+            break;
+        case S_P1_SELECT:
+            console.log("S_P1_SELECT")
+            break;
+        case S_P2_SELECT:
+            break;
+        case S_COMPARE: 
+            break;
+        case S_MATCH_OVER:
+            break;
+    }
+}) 
+
 $(document).ready(function () {
     // Check if game is in progress by checking if player slots full
     database.ref("/players").once('value', function(snap) {
@@ -62,6 +82,7 @@ $("#nameSubmit").on("click", function(event) {
             // Put player name into database
             let ref = database.ref("/players/player1")
             ref.onDisconnect().remove()
+            database.ref().onDisconnect().update({state: 0})
 
             wins=0
             losses=0;
@@ -75,10 +96,13 @@ $("#nameSubmit").on("click", function(event) {
             // Hide name entry
             $("#nameForm").hide()
 
-            // Make buttons in Player 1 area
-            makeRPSbuttons( $("#player1Selection") )
-            state = S_P1_SELECT
-            database.ref().update({state: S_P1_SELECT})
+            // Start game if Player 2 also exists
+            if ( snap.hasChild("player2") ) {
+                // Make buttons in Player 1 area
+                makeRPSbuttons( $("#player1Selection") )
+                state = S_P1_SELECT
+                database.ref().update({state: S_P1_SELECT})
+            }
 
         } else {
             console.log("Player 1 already exists")
@@ -94,9 +118,24 @@ $("#nameSubmit").on("click", function(event) {
                 // Put player name into database
                 let ref = database.ref("/players/player2")
                 ref.onDisconnect().remove()
+                database.ref().onDisconnect().update({state: 0})
+
+                wins=0
+                losses=0;
+    
                 ref.set({
-                    name: name
+                    name: name,
+                    wins: wins,
+                    losses: losses
                 })
+    
+                // Hide name entry
+                $("#nameForm").hide()
+
+                // Start game (as P1 already exists)
+                state = S_P1_SELECT
+                database.ref().update({state: S_P1_SELECT})
+    
             } else {
                 console.log("Player 2 already exists")
             }
