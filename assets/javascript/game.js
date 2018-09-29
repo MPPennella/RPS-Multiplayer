@@ -28,8 +28,11 @@ database.ref("/state").on("value", function(snap) {
             break;
         case S_P1_SELECT:
             console.log("S_P1_SELECT")
+            p1SelectPhase();
             break;
         case S_P2_SELECT:
+            console.log("S_P2_SELECT")
+            p2SelectPhase();
             break;
         case S_COMPARE: 
             break;
@@ -98,9 +101,6 @@ $("#nameSubmit").on("click", function(event) {
 
             // Start game if Player 2 also exists
             if ( snap.hasChild("player2") ) {
-                // Make buttons in Player 1 area
-                makeRPSbuttons( $("#player1Selection") )
-                state = S_P1_SELECT
                 database.ref().update({state: S_P1_SELECT})
             }
 
@@ -133,7 +133,6 @@ $("#nameSubmit").on("click", function(event) {
                 $("#nameForm").hide()
 
                 // Start game (as P1 already exists)
-                state = S_P1_SELECT
                 database.ref().update({state: S_P1_SELECT})
     
             } else {
@@ -164,6 +163,49 @@ database.ref("/players/player2").on("value", function(snap) {
         $("#player2Name").html("&nbsp;")
     }
 })
+
+// Handler function for S_P1_SELECT phase
+function p1SelectPhase() {
+    if (playerNumber == 1) {
+        // What Player 1 sees
+        
+        // Make buttons in Player 1 area
+        makeRPSbuttons( $("#player1Selection") )
+
+        // Waiting message in Player 2 area
+        $("#player2Selection").empty().text("Opponent waiting on your selection")
+    } else if (playerNumber == 2) {
+        // What Player 2 sees
+
+        // Waiting message in Player 1 area
+        $("#player1Selection").empty().text("Opponent is choosing")
+
+        // Waiting message in Player 2 area
+        $("#player2Selection").empty().text("Waiting on opponent's selection")
+    }
+
+}
+
+// Handler function for S_P2_SELECT phase
+function p2SelectPhase() {
+    if (playerNumber == 1) {
+        // What Player 1 sees
+
+        // Their own selection in Player 1 area
+
+        // Waiting message in Player 2 area
+        $("#player2Selection").empty().text("Opponent is choosing")
+    } else if (playerNumber == 2) {
+        // What Player 2 sees
+    
+        // Waiting message in Player 1 area
+        $("#player2Selection").empty().text("Opponent has chosen")
+
+        // Make buttons in Player 2 area
+        makeRPSbuttons( $("#player2Selection") )
+    }
+
+}
 
 // Makes the set of buttons for selecting which symbol to throw, and places them in target jQuery element
 function makeRPSbuttons(target) {
