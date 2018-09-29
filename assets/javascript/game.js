@@ -36,6 +36,7 @@ database.ref("/state").on("value", function(snap) {
             break;
         case S_COMPARE: 
             console.log("S_COMPARE")
+            comparePhase();
             break;
         case S_MATCH_OVER:
             break;
@@ -208,6 +209,47 @@ function p2SelectPhase() {
 
 }
 
+// Handler for comparison phase
+function comparePhase() {
+    // Determine winner
+    let winner = determineWinner()
+    console.log("WINNER: "+winner)
+
+    // Increment wins if player won, losses if player lost, nothing if tie
+    if (winner != 0) {
+        if (winner==playerNumber) {
+            // Add 1 to wins and push to database
+            wins++
+            database.ref("/players/player"+playerNumber).update({wins: wins})
+
+            // Update notification text
+            $("#winDisplay").text("You Won!")
+        } else {
+            // Add 1 to losses and push to database
+            losses++
+            database.ref("/players/player"+playerNumber).update({losses: losses})
+            
+            // Update notification text
+            $("#winDisplay").text("You Lost!")
+        }
+    } else {
+        // Update notification text
+        $("#winDisplay").text("It's a tie!")
+    }
+
+    
+    // Go to next phase
+    // Determine if match won (3 wins) or if more games need to be played
+    if (wins>=3) {
+        // Display victory screen
+        console.log("Won the match!")
+    } else {
+        // Play another round
+        makeRPSbuttons( $("#player1Selection") )
+        database.ref().update({state: S_P1_SELECT})
+}
+}
+
 // Makes the set of buttons for selecting which symbol to throw, and places them in target jQuery element
 function makeRPSbuttons(target) {
     target.empty()
@@ -288,6 +330,7 @@ function p2SelectTestingDummy() {
 }
 
 // Compares P1 and P2 selections and determines winner
+// Returns number of winning player (1/2), or 0 for a tie
 function determineWinner() {
     database.ref("/players").once("value", function(snap) {
         let p1Pick = convertPick( snap.child("player1").val().choice )
@@ -297,40 +340,13 @@ function determineWinner() {
 
         // Use modular math to find relationship between player and opponent pick
         // Extra +3 is to make sure calculation is not on a negative number
-        let winCalc = (p1Pick-p2Pick+3) % 3
+        // Modulus 0 is a tie
+        // Modulus 1 is a win for P1/loss for P2
+        // Modulus 2 is a win for P2/loss for P1
+        return ((p1Pick-p2Pick+3) % 3)  
 
-        // Change scores based on result
-        if ( winCalc == 1 ) {
-            // Modulus 1 is a win
-            // Add 1 to wins and push to database
-            wins++
-            database.ref("/players/player1").update({wins: wins})
-            $("#winDisplay").text("You Won!")
-        } else if ( winCalc == 2) {
-            // Modulus 2 is a loss
-            // Add 1 to losses and push to database
-            losses++
-            database.ref("/players/player1").update({losses: losses})
-            $("#winDisplay").text("You Lost!")
-        } else {
-            // Modulus 0 is a tie, ties are not tracked
-            $("#winDisplay").text("It's a tie!")
-        }
-        
-
-        // Determine if match won (3 wins) or if more games need to be played
-        if (wins>=3) {
-            // Display victory screen
-            console.log("Won the match!")
-        } else {
-            // Play another round
-            makeRPSbuttons( $("#player1Selection") )
-            state = S_P1_SELECT
-            database.ref().update({state: S_P1_SELECT})
-        }
-            
-    })
-    
+        //TODO: Fix call, can't return to main function from inside database callback
+    })    
 }
 
 // Converts pick from string to integer format for analysis
