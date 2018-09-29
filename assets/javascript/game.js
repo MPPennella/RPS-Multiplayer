@@ -275,3 +275,13 @@ $("#chatSubmit").on("click", function(event) {
     }
     $("#chatEntry").val("");
 })
+
+// Loads chat into log
+database.ref("/chat").orderByChild("timestamp").on("child_added", function(snap) {
+    let log = snap.val();
+    console.log(log)
+
+    let newlog = $("<div>").text(`${log.username}: ${log.message}`)
+    $("#chatLog").append(newlog)
+    
+})
