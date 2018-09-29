@@ -11,6 +11,9 @@ let state
 // Local win/loss-tracking variables
 let wins, losses
 
+// Local player-tracking variables
+let playerName = null
+
 // Database reference
 let database = firebase.database()
 
@@ -100,7 +103,8 @@ $("#nameSubmit").on("click", function(event) {
 database.ref("/players/player1").on("value", function(snap) {
     let player = snap.val()
     if (player != null) {
-        $("#player1Name").text(player.name)
+        playerName = player.name
+        $("#player1Name").text(playerName)
     } else {
         $("#player1Name").html("&nbsp;")
     }
@@ -256,3 +260,18 @@ function convertPick(pick) {
     }
 }
 
+// Checks for chat submissions
+$("#chatSubmit").on("click", function(event) {
+    event.preventDefault();
+    
+    if (playerName != null){
+        let msg = $("#chatEntry").val();
+        
+        database.ref("/chat").push({
+            username: playerName,
+            message: msg,
+            timestamp: firebase.database.ServerValue.TIMESTAMP
+        })
+    }
+    $("#chatEntry").val("");
+})
