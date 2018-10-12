@@ -1,6 +1,8 @@
 # RPS-Multiplayer
 An online multi-client head-to-head Rock/Paper/Scissors game utilizing Firebase
 
+[https://mppennella.github.io/RPS-Multiplayer/](https://mppennella.github.io/RPS-Multiplayer/)
+
 ## Features
 * User sign-in
 * Turn-based RPS gameplay - see [Gameplay Details](#gameplay-details) for more
